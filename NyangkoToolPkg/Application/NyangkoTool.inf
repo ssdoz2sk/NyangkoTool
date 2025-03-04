@@ -1,0 +1,54 @@
+[Defines]
+    INF_VERSION     = 0x00010005
+    VERSION_STRING  = 1.0
+    BASE_NAME       = NyangkoTool
+    MODULE_TYPE     = UEFI_APPLICATION
+    FILE_GUID       = C1240868-9952-4CA7-AFE0-113E30CC4A0F
+    ENTRY_POINT     = UefiMain
+
+[Sources]
+    ScreenManager.c
+    ScreenManager.h
+    Ui/Menu.h
+    Ui/Menu.c
+    DataTable.h
+    DataTable.c
+    Pci.c
+    Pci.h
+    Acpi.c
+    Acpi.h
+    Variable.c
+    Variable.h
+    Handle.c
+    Handle.h
+    Smbios.c
+    Smbios.h
+    Setting.c
+    Setting.h
+    Tool.c
+    Util.c
+
+[Packages]
+    MdeModulePkg/MdeModulePkg.dec
+    MdePkg/MdePkg.dec
+
+[Guids]
+    gEfiAcpiTableGuid
+
+[Protocols]
+    gEfiPciIoProtocolGuid
+    gEfiAcpiSdtProtocolGuid
+    gEfiHiiFontProtocolGuid
+    gEfiSmbiosProtocolGuid
+
+[LibraryClasses]
+    DebugLib
+    UefiRuntimeServicesTableLib
+    UefiBootServicesTableLib
+    UefiApplicationEntryPoint
+    UefiLib
+    PrintLib
+
+
+[FeaturePcd]
+  gEfiMdePkgTokenSpaceGuid.PcdUgaConsumeSupport           ## CONSUMES

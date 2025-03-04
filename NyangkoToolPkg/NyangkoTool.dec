@@ -1,0 +1,5 @@
+[Defines]
+  DEC_SPECIFICATION              = 0x00010005
+  PACKAGE_NAME                   = NyangkoToolPkg
+  PACKAGE_GUID                   = C300C753-9F47-4E41-AC9D-6E2A101538B9
+  PACKAGE_VERSION                = 1.00
