@@ -3,3 +3,11 @@
   PACKAGE_NAME                   = NyangkoToolPkg
   PACKAGE_GUID                   = C300C753-9F47-4E41-AC9D-6E2A101538B9
   PACKAGE_VERSION                = 1.00
+
+[Includes]
+  Include
+  
+[LibraryClasses]
+  NyangkoMenuLib|Include/Library/NyangkoMenuLib.h
+  NyangkoDataTableLib|Include/Library/NyangkoDataTableLib.h
+

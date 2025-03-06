@@ -5,12 +5,7 @@
 #include <Library/PrintLib.h>
 #include <Library/UefiLib.h>
 #include <Protocol/PciIo.h>
-
-#include "Ui/Menu.h"
-#include "Handle.h"
-
-EFI_GUID    HandleMenuGuid  = HANDLE_MENU_GUID;
-
+#include <Library/NyangkoMenuLib.h>
 
 EFI_STATUS
 GuidEditBox (
@@ -68,10 +63,10 @@ ShowHandleProtocol(
                       L"%g",
                       ProtocolGuidArray[ProtocolIndex]);
 
-        PushMenuItem (HandleSubMenu,
-                      Title,
-                      NULL,
-                      NULL);
+        RegisterMenuItem (HandleSubMenu,
+                          Title,
+                          NULL,
+                          NULL);
     }
     RunMenuLoop(HandleSubMenu);
 
@@ -114,10 +109,10 @@ ShowAllHandle (
                       L"0x%08p",
                       HandleBuffer[Index]);
 
-        PushMenuItem (HandleMenu,
-                      Title,
-                      ShowHandleProtocol,
-                      HandleBuffer[Index]);
+        RegisterMenuItem (HandleMenu,
+                          Title,
+                          ShowHandleProtocol,
+                          HandleBuffer[Index]);
     }
     RunMenuLoop(HandleMenu);
 
@@ -200,10 +195,10 @@ Search (
                       L"0x%08p",
                       HandleBuffer[Index]);
 
-        PushMenuItem (HandleMenu,
-                      Title,
-                      ShowHandleProtocol,
-                      HandleBuffer[Index]);
+        RegisterMenuItem (HandleMenu,
+                          Title,
+                          ShowHandleProtocol,
+                          HandleBuffer[Index]);
     }
     RunMenuLoop(HandleMenu);
 
@@ -347,19 +342,41 @@ EFI_STATUS EFIAPI InitHandleMenu(
     InitializeListHead (&Menu->MenuItemList);
     Menu->Title   = L"Handle Menu";
 
-    PushMenuItem (Menu,
-                  L"Show all handle",
-                  ShowAllHandle,
-                  NULL);
+    RegisterMenuItem (Menu,
+                      L"Show all handle",
+                      ShowAllHandle,
+                      NULL);
 
-    PushMenuItem (Menu,
-                  L"Search Handle by Protocol Guid",
-                  InitSearchBox,
-                  NULL);
+    RegisterMenuItem (Menu,
+                      L"Search Handle by Protocol Guid",
+                      InitSearchBox,
+                      NULL);
     
     RunMenuLoop(Menu);
 
     FreePool(Menu);
 
     return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+HandleMenuItemLibConstructor (
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
+  )
+{
+  RegisterRootMenuItem(L"Handle",      InitHandleMenu,     NULL);
+
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+HandleMenuItemLibDestructor (
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
+  )
+{
+  return EFI_SUCCESS;
 }

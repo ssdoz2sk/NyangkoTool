@@ -5,10 +5,16 @@
 #include <Library/PrintLib.h>
 #include <Library/UefiLib.h>
 #include <Protocol/PciIo.h>
+#include <Library/NyangkoMenuLib.h>
+#include <Library/NyangkoDataTableLib.h>
 #include "Pci.h"
-#include "DataTable.h"
 
-EFI_GUID PciMenuGuid = PCI_MENU_GUID;
+EFI_STATUS
+EFIAPI
+ShowPciRegister (
+    VOID *Context
+);
+
 
 EFI_STATUS 
 EFIAPI
@@ -208,10 +214,10 @@ EFI_STATUS  EFIAPI  InitPciMenu(
                     PciDev,
                     PciFun));
             
-            PushMenuItem (PciMenu,
-                          Title,
-                          ShowPciRegister,
-                          PciDevice);
+            RegisterMenuItem (PciMenu,
+                              Title,
+                              ShowPciRegister,
+                              PciDevice);
         }
     }
 
@@ -373,4 +379,26 @@ EFIAPI
 PciMenuDestroy() 
 {
     return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+PciMenuItemLibConstructor (
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
+  )
+{
+  RegisterRootMenuItem(L"Pci",         InitPciMenu,        NULL);
+
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+PciMenuItemLibDestructor (
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
+  )
+{
+  return EFI_SUCCESS;
 }

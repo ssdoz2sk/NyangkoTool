@@ -5,10 +5,9 @@
 #include <Library/PrintLib.h>
 #include <Library/UefiLib.h>
 #include <Protocol/Smbios.h>
+#include <Library/NyangkoMenuLib.h>
+#include <Library/NyangkoDataTableLib.h>
 
-#include "Ui/Menu.h"
-#include "DataTable.h"
-#include "Smbios.h"
 
 
 EFI_STATUS
@@ -180,10 +179,10 @@ InitSmbiosMenu(
                       Record->Type,
                       Record->Handle);
 
-        PushMenuItem (SmbiosMenu,
-                      Title,
-                      ShowSmbiosRegister,
-                      Record);
+        RegisterMenuItem (SmbiosMenu,
+                          Title,
+                          ShowSmbiosRegister,
+                          Record);
     }
 
     RunMenuLoop(SmbiosMenu);
@@ -191,4 +190,26 @@ InitSmbiosMenu(
     FreePool(SmbiosMenu);
 
     return Status;
+}
+
+EFI_STATUS
+EFIAPI
+SmbiosMenuItemLibConstructor (
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
+  )
+{
+  RegisterRootMenuItem(L"Smbios",      InitSmbiosMenu,     NULL);
+
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+SmbiosMenuItemLibDestructor (
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
+  )
+{
+  return EFI_SUCCESS;
 }

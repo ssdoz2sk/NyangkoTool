@@ -4,10 +4,8 @@
 #include <Library/DebugLib.h>
 #include <Library/PrintLib.h>
 #include <Library/UefiLib.h>
-#include "Acpi.h"
-#include "DataTable.h"
-
-EFI_GUID    AcpiMenuGuid  = ACPI_MENU_GUID;
+#include <Library/NyangkoMenuLib.h>
+#include <Library/NyangkoDataTableLib.h>
 
 STATIC
 EFI_STATUS
@@ -187,10 +185,10 @@ InitSdtMenu (
 
     DEBUG((DEBUG_INFO, "%s\n", Title));
     
-    PushMenuItem (SdtMenu,
-                  Title,
-                  NULL,
-                  NULL);
+    RegisterMenuItem (SdtMenu,
+                      Title,
+                      NULL,
+                      NULL);
 
     if (Header->Signature == EFI_ACPI_5_0_ROOT_SYSTEM_DESCRIPTION_TABLE_SIGNATURE) {
         SdtMenu->Title = L"RSDT Table";
@@ -214,10 +212,10 @@ InitSdtMenu (
 
             DEBUG((DEBUG_INFO, "%s\n", Title));
 
-            PushMenuItem (SdtMenu,
-                          Title,
-                          ShowAcpiTableDump,
-                          Sdt);
+            RegisterMenuItem (SdtMenu,
+                              Title,
+                              ShowAcpiTableDump,
+                              Sdt);
         }
     } else if (Header->Signature == EFI_ACPI_5_0_EXTENDED_SYSTEM_DESCRIPTION_TABLE_SIGNATURE) {
         SdtMenu->Title = L"XSDT Table";
@@ -241,10 +239,10 @@ InitSdtMenu (
             
             DEBUG((DEBUG_INFO, "%s\n", Title));
 
-            PushMenuItem (SdtMenu,
-                          Title,
-                          ShowAcpiTableDump,
-                          Sdt);
+            RegisterMenuItem (SdtMenu,
+                              Title,
+                              ShowAcpiTableDump,
+                              Sdt);
         }
     }
     RunMenuLoop(SdtMenu);
@@ -276,14 +274,37 @@ InitAcpiMenu(
     }
 
     if (Xsdt != NULL) {
-        PushMenuItem (SdtMenu, L"Xsdt",    InitSdtMenu,    Xsdt);
+        RegisterMenuItem (SdtMenu, L"Xsdt",    InitSdtMenu,    Xsdt);
     }
 #ifdef MDE_CPU_X64
     if (Rsdt != NULL) {
-        PushMenuItem (SdtMenu, L"Rsdt",    InitSdtMenu,    Rsdt);
+        RegisterMenuItem (SdtMenu, L"Rsdt",    InitSdtMenu,    Rsdt);
     }
 #endif 
     RunMenuLoop(SdtMenu);
 
     return EFI_SUCCESS;
+}
+
+
+EFI_STATUS
+EFIAPI
+AcpiMenuItemLibConstructor (
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
+  )
+{
+  RegisterRootMenuItem(L"Acpi Table",  InitAcpiMenu,       NULL);
+
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+AcpiMenuItemLibDestructor (
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
+  )
+{
+  return EFI_SUCCESS;
 }

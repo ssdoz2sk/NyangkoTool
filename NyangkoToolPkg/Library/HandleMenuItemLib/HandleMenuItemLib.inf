@@ -1,0 +1,33 @@
+[Defines]
+  INF_VERSION                    = 0x00010006
+  BASE_NAME                      = HandleMenuItemLib
+  FILE_GUID                      = 69209C4E-B8DF-445D-8549-D49641EC46F6
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 1.2
+  LIBRARY_CLASS                  = NULL|UEFI_APPLICATION UEFI_DRIVER
+  CONSTRUCTOR                    = HandleMenuItemLibConstructor
+  DESTRUCTOR                     = HandleMenuItemLibDestructor
+
+[Sources]
+  HandleMenuItemLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  NyangkoToolPkg/NyangkoToolPkg.dec
+
+[LibraryClasses]
+  MemoryAllocationLib
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  PrintLib
+  UefiBootServicesTableLib
+  NyangkoMenuLib
+  NyangkoDataTableLib
+
+[Protocols]
+  
+
+[Guids]
+  

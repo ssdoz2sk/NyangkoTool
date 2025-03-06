@@ -1,0 +1,32 @@
+[Defines]
+  INF_VERSION                    = 0x00010006
+  BASE_NAME                      = SmbiosMenuItemLib
+  FILE_GUID                      = 3D9F0388-FB52-4392-80E2-FA6FE3BAF216
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 1.2
+  LIBRARY_CLASS                  = NULL|UEFI_APPLICATION UEFI_DRIVER
+  CONSTRUCTOR                    = SmbiosMenuItemLibConstructor
+  DESTRUCTOR                     = SmbiosMenuItemLibDestructor
+
+[Sources]
+  SmbiosMenuItemLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  NyangkoToolPkg/NyangkoToolPkg.dec
+
+[LibraryClasses]
+  MemoryAllocationLib
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  PrintLib
+  UefiBootServicesTableLib
+  NyangkoMenuLib
+  NyangkoDataTableLib
+
+[Protocols]
+  gEfiSmbiosProtocolGuid
+  
+[Guids]

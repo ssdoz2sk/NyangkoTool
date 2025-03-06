@@ -3,9 +3,6 @@
 
 #include <Base.h>
 #include <Uefi.h>
-#include "Ui/Menu.h"
-
-#define PCI_MENU_GUID {0x0776ba77, 0xdcd4, 0x466d, {0x98, 0x4a, 0xa2, 0xe4, 0x99, 0xbf, 0xef, 0xb8}}
 
 #ifdef __GNUC__
 #pragma GCC diagnostic warning "-Wunused-variable"
@@ -21,8 +18,6 @@ struct _PCI_CLASS_CODE_MAP {
     CHAR16  *Description;
 };
 #pragma pack(pop)
-
-extern EFI_GUID PciMenuGuid;
 
 static PCI_CLASS_CODE_MAP gPciClassCodeMap[] = {
     { 0x00, 0x00, 0x00,	L"Any device except for VGA-Compatible devices" },
@@ -199,10 +194,5 @@ static PCI_CLASS_CODE_MAP gPciClassCodeMap[] = {
 };
 
 
-EFI_STATUS  EFIAPI  InitPciMenu(VOID  *Context);
-
-EFI_STATUS  EFIAPI  ShowPciRegister(VOID *Context);
-
-EFI_STATUS  EFIAPI  PciMenuDestroy();
 
 #endif

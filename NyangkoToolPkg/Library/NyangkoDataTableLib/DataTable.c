@@ -4,9 +4,7 @@
 #include <Library/MemoryAllocationLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
-#include "DataTable.h"
-#include "Ui/Menu.h"
-#include "Setting.h"
+#include <Library/NyangkoDataTableLib.h>
 
 EFI_STATUS
 EditBox (
@@ -23,12 +21,24 @@ TableInit ()
     UINT16   Index;
     UINT16   Index2;
     UINT16   LineRows[] = {2, 4, 21, 23};
+    EFI_STATUS Status;
+    UINTN    Col;
+    UINTN    Row;
+
+    Status = gST->ConOut->QueryMode (gST->ConOut,
+                                     gST->ConOut->Mode->Mode,
+                                     &Col,
+                                     &Row);
+    if (EFI_ERROR(Status)) {
+        Col = 80;
+    }
+
     // gST->ConOut->Reset(gST->ConOut, FALSE);
     gST->ConOut->SetAttribute(gST->ConOut, EFI_WHITE | EFI_BACKGROUND_BLACK);
     for (Index = 0; Index < sizeof(LineRows) / sizeof(UINT16); Index += 1) {
         Index2 = 0;
         gST->ConOut->SetCursorPosition(gST->ConOut, 0, LineRows[Index]);
-        while (Index2++ < gSetting->DisplayMode.Col) {
+        while (Index2++ < Col) {
             gST->ConOut->OutputString(gST->ConOut, L"-");
         }
     }

@@ -1,0 +1,29 @@
+[Defines]
+  INF_VERSION                    = 0x00010006
+  BASE_NAME                      = ResetMenuItemLib
+  FILE_GUID                      = 424F04CB-998D-4288-B849-09EB6459A140
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 1.2
+  LIBRARY_CLASS                  = NULL|UEFI_APPLICATION UEFI_DRIVER
+  CONSTRUCTOR                    = ResetMenuItemLibConstructor
+  DESTRUCTOR                     = ResetMenuItemLibDestructor
+
+[Sources]
+  ResetMenuItemLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  NyangkoToolPkg/NyangkoToolPkg.dec
+
+[LibraryClasses]
+  MemoryAllocationLib
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  PrintLib
+  UefiBootServicesTableLib
+
+[Protocols]
+
+[Guids]

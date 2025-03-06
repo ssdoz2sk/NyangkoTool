@@ -6,7 +6,7 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
 #include <Uefi.h>
-#include "Setting.h"
+
 
 #define MAX_STRING_SIZE 80
 
@@ -57,11 +57,12 @@ FillNs(UINT8 N, CONST CHAR16 *Str)
     FreePool(Buffer);
 }
 
+#if 0
 STATIC VOID
 ClrToEol ()
 {
     UINT8 X = (UINT8)gST->ConOut->Mode->CursorColumn;
-    UINT8 N = (UINT8)gSetting->DisplayMode.Col - X;
+    UINT8 N = (UINT8)DisplayCol - X;
 
     FillNs (N, NULL);
 }
@@ -69,21 +70,22 @@ ClrToEol ()
 VOID
 ShowMsg (CHAR16 *Msg)
 {
-    UINT8 Col = (UINT8)gSetting->DisplayMode.Col;
+    UINT8 Col = (UINT8)DisplayCol;
     
-    gST->ConOut->SetCursorPosition(gST->ConOut, Col, gSetting->DisplayMode.Row);
+    gST->ConOut->SetCursorPosition(gST->ConOut, Col, DisplayRow);
     ClrToEol();
 
     if (!Msg) {
         Col -= (UINT8)StrLen(UI_MSG_PAUSE);
-        gST->ConOut->SetCursorPosition(gST->ConOut, Col, gSetting->DisplayMode.Row);
+        gST->ConOut->SetCursorPosition(gST->ConOut, Col, DisplayRow);
         gST->ConOut->OutputString(gST->ConOut, UI_MSG_PAUSE);
     } else {
         Col -= (UINT8)StrLen(Msg);
-        gST->ConOut->SetCursorPosition(gST->ConOut, Col, gSetting->DisplayMode.Row);
+        gST->ConOut->SetCursorPosition(gST->ConOut, Col, DisplayRow);
         gST->ConOut->OutputString(gST->ConOut, Msg);
     }
 }
+#endif
 
 BOOLEAN
 IsAtDashOffset (

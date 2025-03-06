@@ -1,0 +1,33 @@
+[Defines]
+  INF_VERSION                    = 0x00010006
+  BASE_NAME                      = AcpiMenuItemLib
+  FILE_GUID                      = 244AB236-B613-4FE3-B575-97AEFC30F1EB
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 1.2
+  LIBRARY_CLASS                  = NULL|UEFI_APPLICATION UEFI_DRIVER
+  CONSTRUCTOR                    = AcpiMenuItemLibConstructor
+  DESTRUCTOR                     = AcpiMenuItemLibDestructor
+
+[Sources]
+  AcpiMenuItemLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  NyangkoToolPkg/NyangkoToolPkg.dec
+
+[LibraryClasses]
+  MemoryAllocationLib
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  PrintLib
+  UefiBootServicesTableLib
+  NyangkoMenuLib
+  NyangkoDataTableLib
+
+[Protocols]
+  gEfiAcpiSdtProtocolGuid
+
+[Guids]
+  gEfiAcpiTableGuid

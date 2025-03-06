@@ -34,6 +34,8 @@
   DebugLib|MdePkg/Library/BaseDebugLibNull/BaseDebugLibNull.inf
   DebugPrintErrorLevelLib|MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf  
   DevicePathLib|MdePkg/Library/UefiDevicePathLib/UefiDevicePathLib.inf
+  NyangkoMenuLib|NyangkoToolPkg/Library/NyangkoMenuLib/NyangkoMenuLib.inf
+  NyangkoDataTableLib|NyangkoToolPkg/Library/NyangkoDataTableLib/NyangkoDataTableLib.inf
 
 
 [LibraryClasses.ARM, LibraryClasses.AARCH64]
@@ -42,6 +44,14 @@
 
 [Components]
   NyangkoToolPkg/Application/NyangkoTool.inf {
+    <LibraryClasses>
+      NULL|NyangkoToolPkg/Library/ScreenMenuItemLib/ScreenMenuItemLib.inf
+      NULL|NyangkoToolPkg/Library/AcpiMenuItemLib/AcpiMenuItemLib.inf
+      NULL|NyangkoToolPkg/Library/PciMenuItemLib/PciMenuItemLib.inf
+      NULL|NyangkoToolPkg/Library/HandleMenuItemLib/HandleMenuItemLib.inf
+      NULL|NyangkoToolPkg/Library/SmbiosMenuItemLib/SmbiosMenuItemLib.inf
+      NULL|NyangkoToolPkg/Library/VariableMenuItemLib/VariableMenuItemLib.inf
+      NULL|NyangkoToolPkg/Library/ResetMenuItemLib/ResetMenuItemLib.inf
     <PcdsFixedAtBuild>
       gEfiMdePkgTokenSpaceGuid.PcdDebugPropertyMask|0xFF
       gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel|0x8000004F

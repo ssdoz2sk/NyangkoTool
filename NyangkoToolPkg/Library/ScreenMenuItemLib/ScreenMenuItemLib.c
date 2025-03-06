@@ -3,11 +3,22 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/DebugLib.h>
 #include <Library/PrintLib.h>
+#include <Library/NyangkoMenuLib.h>
 #include "ScreenManager.h"
-#include "Ui/Menu.h"
-#include "Setting.h"
 
-EFI_GUID ScreenMenuGuid = SCREEN_MENU_GUID;
+
+
+EFI_STATUS
+EFIAPI
+SetScreenMode(VOID *Context) {
+    EFI_STATUS      Status;
+    SCREEN_MODE     *ScreenMode = (SCREEN_MODE *)Context;
+    Status = gST->ConOut->SetMode(gST->ConOut, ScreenMode->Mode);
+
+    gRedraw = TRUE; // Redraw menu
+
+    return Status;
+}
 
 
 EFI_STATUS
@@ -46,10 +57,10 @@ InitScreenMenu(
                       Col,
                       Row);
 
-        PushMenuItem (ScreenMenu,
-                      Title,
-                      SetScreenMode,
-                      ScreenMode);
+        RegisterMenuItem (ScreenMenu,
+                          Title,
+                          SetScreenMode,
+                          ScreenMode);
 
     }
 
@@ -60,21 +71,24 @@ InitScreenMenu(
     return EFI_SUCCESS;
 }
 
+EFI_STATUS
+EFIAPI
+ScreenMenuItemLibConstructor (
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
+  )
+{
+  RegisterRootMenuItem(L"Screen Size", InitScreenMenu,     NULL);
+
+  return EFI_SUCCESS;
+}
 
 EFI_STATUS
 EFIAPI
-SetScreenMode(VOID *Context) {
-    EFI_STATUS      Status;
-    SCREEN_MODE     *ScreenMode = (SCREEN_MODE *)Context;
-    Status = gST->ConOut->SetMode(gST->ConOut, ScreenMode->Mode);
-
-    gRedraw = TRUE; // Redraw menu
-
-    if (gSetting != NULL) {
-        gSetting->DisplayMode.Mode = ScreenMode->Mode;
-        gSetting->DisplayMode.Col  = ScreenMode->Col;
-        gSetting->DisplayMode.Row  = ScreenMode->Row;
-    }
-
-    return Status;
+ScreenMenuItemLibDestructor (
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
+  )
+{
+  return EFI_SUCCESS;
 }

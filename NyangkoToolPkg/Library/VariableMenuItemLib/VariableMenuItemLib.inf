@@ -1,0 +1,32 @@
+[Defines]
+  INF_VERSION                    = 0x00010006
+  BASE_NAME                      = VariableMenuItemLib
+  FILE_GUID                      = A6F817F1-CCAA-416B-80ED-E475649D63F1
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 1.2
+  LIBRARY_CLASS                  = NULL|UEFI_APPLICATION UEFI_DRIVER
+  CONSTRUCTOR                    = VariableMenuItemLibConstructor
+  DESTRUCTOR                     = VariableMenuItemLibDestructor
+
+[Sources]
+  VariableMenuItemLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  NyangkoToolPkg/NyangkoToolPkg.dec
+
+[LibraryClasses]
+  MemoryAllocationLib
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  PrintLib
+  UefiBootServicesTableLib
+  NyangkoMenuLib
+  NyangkoDataTableLib
+
+[Protocols]
+
+[Guids]
+  

@@ -4,10 +4,9 @@
 #include <Library/DebugLib.h>
 #include <Library/PrintLib.h>
 #include <Library/UefiLib.h>
+#include <Library/NyangkoMenuLib.h>
+#include <Library/NyangkoDataTableLib.h>
 #include "Variable.h"
-#include "DataTable.h"
-
-EFI_GUID VariableMenuGuid = VARIABLE_MENU_GUID;
 
 EFI_STATUS
 GuidEditBox (
@@ -318,10 +317,11 @@ Search (
                 Variable->Data          = VarData;  
                 gBS->CopyMem(&Variable->Guid, &Guid,         sizeof(EFI_GUID));
 
-                PushMenuItem(VariableMenu,
-                             NULL,
-                             ShowVariableTableDump,
-                             Variable);
+                RegisterMenuItem(VariableMenu,
+                                 NULL,
+                                 ShowVariableTableDump,
+                                 Variable);
+
                 Status = EFI_SUCCESS;
             } else {
                 FreePool(VarData);
@@ -506,19 +506,41 @@ InitVariableMenu(
     InitializeListHead (&VariableMenu->MenuItemList);
     VariableMenu->Title = L"Variable Menu";
 
-    PushMenuItem (VariableMenu,
-                  L"Show all variables",
-                  ShowAllVariable,
-                  NULL);
+    RegisterMenuItem (VariableMenu,
+                      L"Show all variables",
+                      ShowAllVariable,
+                      NULL);
 
-    PushMenuItem (VariableMenu,
-                  L"Search variables",
-                  InitSearchBox,
-                  NULL);
+    RegisterMenuItem (VariableMenu,
+                      L"Search variables",
+                      InitSearchBox,
+                      NULL);
     
     RunMenuLoop(VariableMenu);
 
     FreePool(VariableMenu);
 
     return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+VariableMenuItemLibConstructor (
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
+  )
+{
+  RegisterRootMenuItem(L"Variables",   InitVariableMenu,   NULL);
+
+  return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+VariableMenuItemLibDestructor (
+  IN EFI_HANDLE        ImageHandle,
+  IN EFI_SYSTEM_TABLE  *SystemTable
+  )
+{
+  return EFI_SUCCESS;
 }

@@ -67,11 +67,10 @@ extern EFI_GUID gTailMenuGuid;
 extern EFI_GUID gRootMenuGuid;
 extern BOOLEAN  gRedraw;
 extern MENU     *gMenu;
+extern UINTN    DisplayMode;
+extern UINTN    DisplayCol;
+extern UINTN    DisplayRow;
 
-
-EFI_STATUS
-EFIAPI
-FreeMenu ();
 
 VOID
 EFIAPI
@@ -81,11 +80,20 @@ RunMenuLoop (
 
 EFI_STATUS
 EFIAPI
-PushMenuItem (
-    IN MENU             *Menu,
+RegisterMenuItem (
+    IN OUT  MENU             *Menu,
+    IN      EFI_STRING       Title,
+    IN      MENU_CALLBACK    Func        OPTIONAL,
+    IN      VOID*            Context     OPTIONAL
+);
+
+EFI_STATUS
+EFIAPI
+RegisterRootMenuItem (
     IN EFI_STRING       Title,
     IN MENU_CALLBACK    Func        OPTIONAL,
     IN VOID*            Context     OPTIONAL
 );
+
 
 #endif

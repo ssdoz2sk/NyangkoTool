@@ -7,39 +7,17 @@
     ENTRY_POINT     = UefiMain
 
 [Sources]
-    ScreenManager.c
-    ScreenManager.h
-    Ui/Menu.h
-    Ui/Menu.c
-    DataTable.h
-    DataTable.c
-    Pci.c
-    Pci.h
-    Acpi.c
-    Acpi.h
-    Variable.c
-    Variable.h
-    Handle.c
-    Handle.h
-    Smbios.c
-    Smbios.h
-    Setting.c
-    Setting.h
     Tool.c
     Util.c
 
 [Packages]
     MdeModulePkg/MdeModulePkg.dec
     MdePkg/MdePkg.dec
+    NyangkoToolPkg/NyangkoToolPkg.dec
 
 [Guids]
-    gEfiAcpiTableGuid
 
 [Protocols]
-    gEfiPciIoProtocolGuid
-    gEfiAcpiSdtProtocolGuid
-    gEfiHiiFontProtocolGuid
-    gEfiSmbiosProtocolGuid
 
 [LibraryClasses]
     DebugLib
@@ -48,7 +26,5 @@
     UefiApplicationEntryPoint
     UefiLib
     PrintLib
+    NyangkoMenuLib
 
-
-[FeaturePcd]
-  gEfiMdePkgTokenSpaceGuid.PcdUgaConsumeSupport           ## CONSUMES

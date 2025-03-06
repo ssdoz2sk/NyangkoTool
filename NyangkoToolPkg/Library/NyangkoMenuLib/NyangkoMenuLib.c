@@ -4,21 +4,92 @@
 #include <Library/MemoryAllocationLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
-#include "Ui/Menu.h"
-#include "Setting.h"
+#include <Library/NyangkoMenuLib.h>
 
-BOOLEAN  gRedraw = FALSE;
-MENU     *gMenu  = NULL;
-EFI_GUID gTailMenuGuid = TAIL_GUID;
-EFI_GUID gRootMenuGuid = ROOT_GUID;
-
+BOOLEAN         gRedraw = FALSE;
+MENU            *gMenu  = NULL;
+EFI_GUID        gTailMenuGuid = TAIL_GUID;
+EFI_GUID        gRootMenuGuid = ROOT_GUID;
+UINTN           DisplayMode;
+UINTN           DisplayCol;
+UINTN           DisplayRow;
 
 EFI_STATUS
 EFIAPI
-FreeMenu () 
-{
+NyangkoMenuLibConstructor (
+    IN EFI_HANDLE           ImageHandle,
+    IN EFI_SYSTEM_TABLE     *SystemTable
+) {
+    EFI_STATUS Status;
+    DisplayMode = gST->ConOut->Mode->Mode;
+
+    Status = gST->ConOut->QueryMode (gST->ConOut,
+                                     DisplayMode,
+                                     &DisplayCol,
+                                     &DisplayRow);
+
+    if (EFI_ERROR(Status)) {
+        DisplayMode = 0;
+        DisplayCol = 80;
+        DisplayRow = 25;
+    }
+
+    gMenu = AllocateZeroPool(sizeof(MENU));
+    InitializeListHead (&gMenu->MenuItemList);
+    gMenu->Title = L"Nyangko Tool v0.1.0 (25/02/29)";
+
     return EFI_SUCCESS;
 }
+
+EFI_STATUS
+EFIAPI
+NyangkoMenuLibDestructor (
+    IN EFI_HANDLE           ImageHandle,
+    IN EFI_SYSTEM_TABLE     *SystemTable    
+) {
+    EFI_STATUS Status;
+    
+    Status = gBS->FreePool(gMenu);
+
+    return Status;
+}
+
+EFI_STATUS
+EFIAPI
+RegisterMenuItem (
+    IN OUT  MENU             *Menu,
+    IN      EFI_STRING       Title,
+    IN      MENU_CALLBACK    Func        OPTIONAL,
+    IN      VOID*            Context     OPTIONAL
+) {
+    MENU_ITEM           *MenuItem;
+    MenuItem = AllocateZeroPool (sizeof (MENU_ITEM));
+    MenuItem->Signature = MENU_SIGNATURE;
+    MenuItem->Index     = Menu->MenuItemSize + 1;
+    MenuItem->Title     = Title;
+    MenuItem->Func      = Func;
+    MenuItem->Context   = Context;
+
+    Menu->MenuItemSize += 1;
+    InsertTailList(&Menu->MenuItemList, &MenuItem->MenuEntry);
+
+    return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+RegisterRootMenuItem (
+    IN EFI_STRING       Title,
+    IN MENU_CALLBACK    Func        OPTIONAL,
+    IN VOID*            Context     OPTIONAL
+) {
+    return RegisterMenuItem(gMenu,
+                            Title,
+                            Func,
+                            Context);
+}
+
+
 
 STATIC
 EFI_STATUS
@@ -55,28 +126,6 @@ ShowSelectItem(
     return EFI_SUCCESS;
 }
 
-EFI_STATUS
-EFIAPI
-PushMenuItem (
-    IN MENU             *Menu,
-    IN EFI_STRING       Title,
-    IN MENU_CALLBACK    Func        OPTIONAL,
-    IN VOID*            Context     OPTIONAL
-) {
-    MENU_ITEM           *MenuItem;
-    MenuItem = AllocateZeroPool (sizeof (MENU_ITEM));
-    MenuItem->Signature = MENU_SIGNATURE;
-    MenuItem->Index     = Menu->MenuItemSize + 1;
-    MenuItem->Title     = Title;
-    MenuItem->Func      = Func;
-    MenuItem->Context   = Context;
-
-    Menu->MenuItemSize += 1;
-    InsertTailList(&Menu->MenuItemList, &MenuItem->MenuEntry);
-
-    return EFI_SUCCESS;
-}
-
 STATIC
 VOID
 ClearScreenBetweenCols (
@@ -95,7 +144,7 @@ ClearScreenBetweenCols (
 
     gST->ConOut->SetAttribute(gST->ConOut, EFI_WHITE | EFI_BACKGROUND_BLACK);
 
-    for (Index1 = 0; Index1 < gSetting->DisplayMode.Row; Index1 += 1) {
+    for (Index1 = 0; Index1 < DisplayRow; Index1 += 1) {
         Index2 = Col1;
         gST->ConOut->SetCursorPosition(gST->ConOut, Col1, Index1);
         while (Index2++ < Col2) {
@@ -104,6 +153,7 @@ ClearScreenBetweenCols (
     }
     
 }
+
 
 STATIC
 VOID
@@ -121,13 +171,13 @@ MenuInit (
     UINT16  Ratio       = Menu->Ratio;
 
     // Last Row
-    LineRows[sizeof(LineRows) / sizeof (UINT16) - 1]  = (UINT16)gSetting->DisplayMode.Row - 1;
+    LineRows[sizeof(LineRows) / sizeof (UINT16) - 1]  = (UINT16)DisplayRow - 1;
 
-    if (ColSplt == 0 || ColSplt == 1 || ColSplt >= gSetting->DisplayMode.Col / 3) {
+    if (ColSplt == 0 || ColSplt == 1 || ColSplt >= DisplayCol / 3) {
         ColSplt = 0;
         Order = 0;
         LineCols[0] = 0;
-        LineCols[1] = (UINT16)gSetting->DisplayMode.Col - 1;
+        LineCols[1] = (UINT16)DisplayCol - 1;
     } else {
         if (Order >= ColSplt) {
             Order = 0;
@@ -136,11 +186,11 @@ MenuInit (
             Ratio = 1;
         }
 
-        LineCols[0] = ((UINT16)gSetting->DisplayMode.Col - 1) / ColSplt * Order;
+        LineCols[0] = ((UINT16)DisplayCol - 1) / ColSplt * Order;
         if (Ratio + Order == ColSplt) {
-            LineCols[1] = (UINT16)gSetting->DisplayMode.Col - 1;
+            LineCols[1] = (UINT16)DisplayCol - 1;
         } else {
-            LineCols[1] = ((UINT16)gSetting->DisplayMode.Col - 1) / ColSplt * (Ratio + Order) - 1;
+            LineCols[1] = ((UINT16)DisplayCol - 1) / ColSplt * (Ratio + Order) - 1;
         }
     }
     ClearScreenBetweenCols(LineCols[0], LineCols[1]);
@@ -193,18 +243,18 @@ RunMenuLoop (
     UINT16                          ColSplt     = Menu->ColSplt;
     UINT16                          Order       = Menu->Order;
     UINT16                          Ratio       = Menu->Ratio;
-    UINT16                          ItemPrePage = (UINT16)gSetting->DisplayMode.Row - 4;
+    UINT16                          ItemPrePage = (UINT16)DisplayRow - 4;
     // UINT16                          MenuPages   = (Menu->MenuItemSize - 1) / ItemPrePage + 1;
     UINT16                          Page        = 0;
     UINT16                          Counter;
     UINT16                          SkipCounter;
 
-    if (ColSplt == 0 || ColSplt == 1 || ColSplt >= gSetting->DisplayMode.Col / 3) {
+    if (ColSplt == 0 || ColSplt == 1 || ColSplt >= DisplayCol / 3) {
         ColSplt = 0;
         Order = 0;
         LineCols[0] = 0;
-        LineCols[1] = gSetting->DisplayMode.Col - 1;
-        LineRows[1] = gSetting->DisplayMode.Row - 2;
+        LineCols[1] = DisplayCol - 1;
+        LineRows[1] = DisplayRow - 2;
     } else {
         if (Order >= ColSplt) {
             Order = 0;
@@ -214,13 +264,13 @@ RunMenuLoop (
             Ratio = 1;
         }
 
-        LineCols[0] = (gSetting->DisplayMode.Col - 1) / ColSplt * Order;
+        LineCols[0] = (DisplayCol - 1) / ColSplt * Order;
         if (Ratio + Order == ColSplt) {
-            LineCols[1] = gSetting->DisplayMode.Col - 1;
+            LineCols[1] = DisplayCol - 1;
         } else {
-            LineCols[1] = (gSetting->DisplayMode.Col - 1) / ColSplt * (Ratio + Order) - 1;
+            LineCols[1] = (DisplayCol - 1) / ColSplt * (Ratio + Order) - 1;
         }
-        LineRows[1] = gSetting->DisplayMode.Row - 2;
+        LineRows[1] = DisplayRow - 2;
     }
     List = &Menu->MenuItemList;
     

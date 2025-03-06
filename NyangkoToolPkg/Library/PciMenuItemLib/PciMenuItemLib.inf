@@ -1,0 +1,32 @@
+[Defines]
+  INF_VERSION                    = 0x00010006
+  BASE_NAME                      = PciMenuItemLib
+  FILE_GUID                      = 5B77164A-216E-4994-9382-EC992C577F47
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 1.2
+  LIBRARY_CLASS                  = NULL|UEFI_APPLICATION UEFI_DRIVER
+  CONSTRUCTOR                    = PciMenuItemLibConstructor
+  DESTRUCTOR                     = PciMenuItemLibDestructor
+
+[Sources]
+  PciMenuItemLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  NyangkoToolPkg/NyangkoToolPkg.dec
+
+[LibraryClasses]
+  MemoryAllocationLib
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  PrintLib
+  UefiBootServicesTableLib
+  NyangkoMenuLib
+  NyangkoDataTableLib
+
+[Protocols]
+  gEfiPciIoProtocolGuid
+
+[Guids]

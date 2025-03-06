@@ -1,0 +1,27 @@
+[Defines]
+  INF_VERSION                    = 0x00010006
+  BASE_NAME                      = NyangkoDataTableLib
+  FILE_GUID                      = B4A6C4E2-E88C-433e-A468-F45629AE3C05
+  MODULE_TYPE                    = UEFI_DRIVER
+  VERSION_STRING                 = 1.1
+  LIBRARY_CLASS                  = NyangkoDataTableLib|UEFI_APPLICATION UEFI_DRIVER DXE_RUNTIME_DRIVER
+
+[Sources.common]
+  DataTable.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  NyangkoToolPkg/NyangkoToolPkg.dec
+
+[LibraryClasses]
+  MemoryAllocationLib
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  PrintLib
+  UefiBootServicesTableLib
+
+[Protocols]
+
+[Guids]
