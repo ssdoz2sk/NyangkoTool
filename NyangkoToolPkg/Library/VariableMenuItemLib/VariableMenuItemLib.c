@@ -8,6 +8,8 @@
 #include <Library/NyangkoDataTableLib.h>
 #include "Variable.h"
 
+MENU_ITEM       *VariableMenuItem;
+
 EFI_STATUS
 GuidEditBox (
     CHAR16  **GuidStr,
@@ -319,6 +321,7 @@ Search (
 
                 RegisterMenuItem(VariableMenu,
                                  NULL,
+                                 NULL,
                                  ShowVariableTableDump,
                                  Variable);
 
@@ -508,11 +511,13 @@ InitVariableMenu(
 
     RegisterMenuItem (VariableMenu,
                       L"Show all variables",
+                      NULL,
                       ShowAllVariable,
                       NULL);
 
     RegisterMenuItem (VariableMenu,
                       L"Search variables",
+                      NULL,
                       InitSearchBox,
                       NULL);
     
@@ -530,7 +535,7 @@ VariableMenuItemLibConstructor (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  RegisterRootMenuItem(L"Variables",   InitVariableMenu,   NULL);
+  RegisterRootMenuItem(L"Variables",    &VariableMenuItem,  InitVariableMenu,   NULL);
 
   return EFI_SUCCESS;
 }
@@ -542,5 +547,6 @@ VariableMenuItemLibDestructor (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  return EFI_SUCCESS;
+    UnregisterRootMenuItem(&VariableMenuItem);
+    return EFI_SUCCESS;
 }

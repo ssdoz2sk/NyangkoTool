@@ -7,6 +7,9 @@
 #include <Library/NyangkoMenuLib.h>
 #include <Library/NyangkoDataTableLib.h>
 
+MENU_ITEM       *AcpiMenuItem;
+
+
 STATIC
 EFI_STATUS
 EFIAPI
@@ -188,6 +191,7 @@ InitSdtMenu (
     RegisterMenuItem (SdtMenu,
                       Title,
                       NULL,
+                      NULL,
                       NULL);
 
     if (Header->Signature == EFI_ACPI_5_0_ROOT_SYSTEM_DESCRIPTION_TABLE_SIGNATURE) {
@@ -214,6 +218,7 @@ InitSdtMenu (
 
             RegisterMenuItem (SdtMenu,
                               Title,
+                              NULL,
                               ShowAcpiTableDump,
                               Sdt);
         }
@@ -241,6 +246,7 @@ InitSdtMenu (
 
             RegisterMenuItem (SdtMenu,
                               Title,
+                              NULL,
                               ShowAcpiTableDump,
                               Sdt);
         }
@@ -306,5 +312,6 @@ AcpiMenuItemLibDestructor (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  return EFI_SUCCESS;
+    UnregisterRootMenuItem(&AcpiMenuItem);
+    return EFI_SUCCESS;
 }

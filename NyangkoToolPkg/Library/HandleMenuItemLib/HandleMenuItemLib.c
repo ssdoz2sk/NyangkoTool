@@ -7,6 +7,8 @@
 #include <Protocol/PciIo.h>
 #include <Library/NyangkoMenuLib.h>
 
+MENU_ITEM       *HandleMenuItem;
+
 EFI_STATUS
 GuidEditBox (
     CHAR16  **GuidStr,
@@ -66,6 +68,7 @@ ShowHandleProtocol(
         RegisterMenuItem (HandleSubMenu,
                           Title,
                           NULL,
+                          NULL,
                           NULL);
     }
     RunMenuLoop(HandleSubMenu);
@@ -111,6 +114,7 @@ ShowAllHandle (
 
         RegisterMenuItem (HandleMenu,
                           Title,
+                          NULL,
                           ShowHandleProtocol,
                           HandleBuffer[Index]);
     }
@@ -197,6 +201,7 @@ Search (
 
         RegisterMenuItem (HandleMenu,
                           Title,
+                          NULL,
                           ShowHandleProtocol,
                           HandleBuffer[Index]);
     }
@@ -344,11 +349,13 @@ EFI_STATUS EFIAPI InitHandleMenu(
 
     RegisterMenuItem (Menu,
                       L"Show all handle",
+                      NULL,
                       ShowAllHandle,
                       NULL);
 
     RegisterMenuItem (Menu,
                       L"Search Handle by Protocol Guid",
+                      NULL,
                       InitSearchBox,
                       NULL);
     
@@ -366,7 +373,7 @@ HandleMenuItemLibConstructor (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  RegisterRootMenuItem(L"Handle",      InitHandleMenu,     NULL);
+  RegisterRootMenuItem(L"Handle",   &HandleMenuItem,    InitHandleMenu,     NULL);
 
   return EFI_SUCCESS;
 }
@@ -378,5 +385,6 @@ HandleMenuItemLibDestructor (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  return EFI_SUCCESS;
+    UnregisterRootMenuItem(&HandleMenuItem);
+    return EFI_SUCCESS;
 }

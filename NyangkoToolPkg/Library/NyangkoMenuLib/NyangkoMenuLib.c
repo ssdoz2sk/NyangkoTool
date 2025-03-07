@@ -21,6 +21,7 @@ NyangkoMenuLibConstructor (
     IN EFI_SYSTEM_TABLE     *SystemTable
 ) {
     EFI_STATUS Status;
+
     DisplayMode = gST->ConOut->Mode->Mode;
 
     Status = gST->ConOut->QueryMode (gST->ConOut,
@@ -59,19 +60,28 @@ EFIAPI
 RegisterMenuItem (
     IN OUT  MENU             *Menu,
     IN      EFI_STRING       Title,
+    OUT     MENU_ITEM        **MenuItem  OPTIONAL,
     IN      MENU_CALLBACK    Func        OPTIONAL,
     IN      VOID*            Context     OPTIONAL
 ) {
-    MENU_ITEM           *MenuItem;
-    MenuItem = AllocateZeroPool (sizeof (MENU_ITEM));
-    MenuItem->Signature = MENU_SIGNATURE;
-    MenuItem->Index     = Menu->MenuItemSize + 1;
-    MenuItem->Title     = Title;
-    MenuItem->Func      = Func;
-    MenuItem->Context   = Context;
+    MENU_ITEM           *Item;
+    Item = AllocateZeroPool (sizeof (MENU_ITEM));
+
+    if (Item == NULL) {
+        return EFI_OUT_OF_RESOURCES;
+    }
+
+    Item->Signature = MENU_SIGNATURE;
+    Item->Index     = Menu->MenuItemSize + 1;
+    Item->Title     = Title;
+    Item->Func      = Func;
+    Item->Context   = Context;
 
     Menu->MenuItemSize += 1;
-    InsertTailList(&Menu->MenuItemList, &MenuItem->MenuEntry);
+    InsertTailList(&Menu->MenuItemList, &Item->MenuEntry);
+    if (MenuItem != NULL) {
+        *MenuItem = Item;
+    }
 
     return EFI_SUCCESS;
 }
@@ -79,16 +89,46 @@ RegisterMenuItem (
 EFI_STATUS
 EFIAPI
 RegisterRootMenuItem (
-    IN EFI_STRING       Title,
-    IN MENU_CALLBACK    Func        OPTIONAL,
-    IN VOID*            Context     OPTIONAL
+    IN  EFI_STRING       Title,
+    OUT MENU_ITEM        **MenuItem,
+    IN  MENU_CALLBACK    Func        OPTIONAL,
+    IN  VOID*            Context     OPTIONAL
 ) {
     return RegisterMenuItem(gMenu,
                             Title,
+                            MenuItem,
                             Func,
                             Context);
 }
 
+EFI_STATUS
+EFIAPI
+UnregisterMenuItem (
+    IN OUT  MENU        *Menu,
+    IN OUT  MENU_ITEM   **MenuItem
+) {
+    MENU_ITEM           *Item;
+
+    Item = *MenuItem;
+
+    RemoveEntryList(&Item->MenuEntry);
+    FreePool(Item);
+
+    Menu->MenuItemSize -= 1;
+
+    Item = NULL;
+
+    return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+UnregisterRootMenuItem (
+    IN OUT  MENU_ITEM   **MenuItem
+) {
+    return UnregisterMenuItem(gMenu,
+                              MenuItem);
+}
 
 
 STATIC

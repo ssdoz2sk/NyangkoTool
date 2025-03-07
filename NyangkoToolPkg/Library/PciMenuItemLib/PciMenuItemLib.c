@@ -9,6 +9,8 @@
 #include <Library/NyangkoDataTableLib.h>
 #include "Pci.h"
 
+MENU_ITEM       *PciMenuItem;
+
 EFI_STATUS
 EFIAPI
 ShowPciRegister (
@@ -216,6 +218,7 @@ EFI_STATUS  EFIAPI  InitPciMenu(
             
             RegisterMenuItem (PciMenu,
                               Title,
+                              NULL,
                               ShowPciRegister,
                               PciDevice);
         }
@@ -388,7 +391,7 @@ PciMenuItemLibConstructor (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  RegisterRootMenuItem(L"Pci",         InitPciMenu,        NULL);
+  RegisterRootMenuItem(L"Pci",  &PciMenuItem,   InitPciMenu,        NULL);
 
   return EFI_SUCCESS;
 }
@@ -400,5 +403,6 @@ PciMenuItemLibDestructor (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  return EFI_SUCCESS;
+    UnregisterRootMenuItem(&PciMenuItem);
+    return EFI_SUCCESS;
 }

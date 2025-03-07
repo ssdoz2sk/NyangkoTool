@@ -8,7 +8,7 @@
 #include <Library/NyangkoMenuLib.h>
 #include <Library/NyangkoDataTableLib.h>
 
-
+MENU_ITEM       *SmbiosMenuItem;
 
 EFI_STATUS
 EFIAPI
@@ -181,6 +181,7 @@ InitSmbiosMenu(
 
         RegisterMenuItem (SmbiosMenu,
                           Title,
+                          NULL,
                           ShowSmbiosRegister,
                           Record);
     }
@@ -199,7 +200,7 @@ SmbiosMenuItemLibConstructor (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  RegisterRootMenuItem(L"Smbios",      InitSmbiosMenu,     NULL);
+  RegisterRootMenuItem(L"Smbios",   &SmbiosMenuItem,    InitSmbiosMenu,     NULL);
 
   return EFI_SUCCESS;
 }
@@ -211,5 +212,6 @@ SmbiosMenuItemLibDestructor (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  return EFI_SUCCESS;
+    UnregisterRootMenuItem(&SmbiosMenuItem);
+    return EFI_SUCCESS;
 }

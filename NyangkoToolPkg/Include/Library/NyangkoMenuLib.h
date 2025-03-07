@@ -83,6 +83,7 @@ EFIAPI
 RegisterMenuItem (
     IN OUT  MENU             *Menu,
     IN      EFI_STRING       Title,
+    OUT     MENU_ITEM        **MenuItem,
     IN      MENU_CALLBACK    Func        OPTIONAL,
     IN      VOID*            Context     OPTIONAL
 );
@@ -90,10 +91,23 @@ RegisterMenuItem (
 EFI_STATUS
 EFIAPI
 RegisterRootMenuItem (
-    IN EFI_STRING       Title,
-    IN MENU_CALLBACK    Func        OPTIONAL,
-    IN VOID*            Context     OPTIONAL
+    IN  EFI_STRING       Title,
+    OUT MENU_ITEM        **MenuItem,
+    IN  MENU_CALLBACK    Func        OPTIONAL,
+    IN  VOID*            Context     OPTIONAL
 );
 
+EFI_STATUS
+EFIAPI
+UnregisterMenuItem (
+    IN OUT  MENU        *Menu,
+    IN OUT  MENU_ITEM   **MenuItem
+);
+
+EFI_STATUS
+EFIAPI
+UnregisterRootMenuItem (
+    IN OUT  MENU_ITEM   **MenuItem
+);
 
 #endif

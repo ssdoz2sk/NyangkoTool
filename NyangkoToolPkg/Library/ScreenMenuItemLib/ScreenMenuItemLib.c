@@ -6,7 +6,7 @@
 #include <Library/NyangkoMenuLib.h>
 #include "ScreenManager.h"
 
-
+MENU_ITEM       *ScreenMenuItem;
 
 EFI_STATUS
 EFIAPI
@@ -59,6 +59,7 @@ InitScreenMenu(
 
         RegisterMenuItem (ScreenMenu,
                           Title,
+                          NULL,
                           SetScreenMode,
                           ScreenMode);
 
@@ -78,7 +79,7 @@ ScreenMenuItemLibConstructor (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  RegisterRootMenuItem(L"Screen Size", InitScreenMenu,     NULL);
+  RegisterRootMenuItem(L"Screen Size", &ScreenMenuItem, InitScreenMenu,     NULL);
 
   return EFI_SUCCESS;
 }
@@ -90,5 +91,6 @@ ScreenMenuItemLibDestructor (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  return EFI_SUCCESS;
+    UnregisterRootMenuItem(&ScreenMenuItem);
+    return EFI_SUCCESS;
 }
