@@ -233,7 +233,8 @@ Search (
     VOID                *VarData;
 
     InitializeListHead (&VariableMenu->MenuItemList);
-    VariableMenu->Title               = L"Variables";
+    StrnCpyS(VariableMenu->Title, MAX_STRING_SIZE, L"Variables", sizeof(L"Variables")/sizeof(CHAR16));
+
     VariableMenu->ShowItem          = VariableShowItem;
     VariableMenu->ShowSelectItem    = VariableShowSelectItem;
 
@@ -507,7 +508,7 @@ InitVariableMenu(
     MENU            *VariableMenu     = AllocateZeroPool(sizeof(MENU));
 
     InitializeListHead (&VariableMenu->MenuItemList);
-    VariableMenu->Title = L"Variable Menu";
+    StrnCpyS(VariableMenu->Title, MAX_STRING_SIZE, L"Variable Menu", sizeof(L"Variable Menu")/sizeof(CHAR16));
 
     RegisterMenuItem (VariableMenu,
                       L"Show all variables",

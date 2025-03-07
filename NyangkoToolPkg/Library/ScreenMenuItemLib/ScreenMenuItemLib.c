@@ -36,7 +36,7 @@ InitScreenMenu(
     MENU                *ScreenMenu     = AllocateZeroPool(sizeof(MENU));
 
     InitializeListHead (&ScreenMenu->MenuItemList);
-    ScreenMenu->Title = L"Screen Menu";
+    StrnCpyS(ScreenMenu->Title, MAX_STRING_SIZE, L"Screen Menu", sizeof(L"Screen Menu")/sizeof(CHAR16));
 
     // Set mirror resolution
     for (Mode = 0; Mode < gST->ConOut->Mode->MaxMode; Mode++) {

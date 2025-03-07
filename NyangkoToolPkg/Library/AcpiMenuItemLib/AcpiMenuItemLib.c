@@ -195,7 +195,7 @@ InitSdtMenu (
                       NULL);
 
     if (Header->Signature == EFI_ACPI_5_0_ROOT_SYSTEM_DESCRIPTION_TABLE_SIGNATURE) {
-        SdtMenu->Title = L"RSDT Table";
+        StrnCpyS(SdtMenu->Title, MAX_STRING_SIZE, L"RSDT Table", sizeof(L"RSDT Table")/sizeof(CHAR16));
 
         for (Offset = sizeof(EFI_ACPI_DESCRIPTION_HEADER);
              Offset < Header->Length; 
@@ -223,7 +223,7 @@ InitSdtMenu (
                               Sdt);
         }
     } else if (Header->Signature == EFI_ACPI_5_0_EXTENDED_SYSTEM_DESCRIPTION_TABLE_SIGNATURE) {
-        SdtMenu->Title = L"XSDT Table";
+        StrnCpyS(SdtMenu->Title, MAX_STRING_SIZE, L"XSDT Table", sizeof(L"XSDT Table")/sizeof(CHAR16));
 
         for (Offset = sizeof(EFI_ACPI_DESCRIPTION_HEADER);
              Offset < Header->Length; 
@@ -269,7 +269,7 @@ InitAcpiMenu(
     MENU                                            *SdtMenu = AllocateZeroPool(sizeof(MENU));
     
     InitializeListHead (&SdtMenu->MenuItemList);
-    SdtMenu->Title = L"ACPI Tables";
+    StrnCpyS(SdtMenu->Title, MAX_STRING_SIZE, L"ACPI Table", sizeof(L"ACPI Table")/sizeof(CHAR16));
 
     Status = GetXsdtRsdtTable(&Rsdp,
                               &Xsdt, 
@@ -280,11 +280,11 @@ InitAcpiMenu(
     }
 
     if (Xsdt != NULL) {
-        RegisterMenuItem (SdtMenu, L"Xsdt",    InitSdtMenu,    Xsdt);
+        RegisterMenuItem (SdtMenu, L"Xsdt",  NULL,  InitSdtMenu,    Xsdt);
     }
 #ifdef MDE_CPU_X64
     if (Rsdt != NULL) {
-        RegisterMenuItem (SdtMenu, L"Rsdt",    InitSdtMenu,    Rsdt);
+        RegisterMenuItem (SdtMenu, L"Rsdt",  NULL,  InitSdtMenu,    Rsdt);
     }
 #endif 
     RunMenuLoop(SdtMenu);
@@ -300,9 +300,9 @@ AcpiMenuItemLibConstructor (
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-  RegisterRootMenuItem(L"Acpi Table",  InitAcpiMenu,       NULL);
+    RegisterRootMenuItem(L"Acpi Table",  &AcpiMenuItem, InitAcpiMenu,       NULL);
 
-  return EFI_SUCCESS;
+    return EFI_SUCCESS;
 }
 
 EFI_STATUS

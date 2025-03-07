@@ -146,7 +146,7 @@ InitSmbiosMenu(
     MENU                    *SmbiosMenu  = AllocateZeroPool(sizeof(MENU));
 
     InitializeListHead (&SmbiosMenu->MenuItemList);
-    SmbiosMenu->Title = L"Smbios Menu";
+    StrnCpyS(SmbiosMenu->Title, MAX_STRING_SIZE, L"Smbios Menu", sizeof(L"Smbios Menu")/sizeof(CHAR16));
 
     Status = gBS->LocateProtocol (&gEfiSmbiosProtocolGuid,
                                   NULL,

@@ -5,6 +5,7 @@
 #include <Uefi.h>
 #include <Library/BaseLib.h>
 #include <Library/DebugLib.h>
+#include <Nyangko.h>
 
 #define MENU_SIGNATURE  SIGNATURE_32 ('M', 'E', 'N', 'U')
 #define ROOT_GUID { 0x00000000, 0x0000, 0x0000, { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }}
@@ -41,7 +42,7 @@ struct _MENU {
     UINT16            ColSplt;
     UINT16            Ratio;
     UINT16            Order;
-    EFI_STRING        Title;
+    CHAR16            Title[MAX_STRING_SIZE];
     SHOW_MENU_HEADER  ShowHeader;
     SHOW_MENU_ITEM    ShowItem;
     SHOW_MENU_ITEM    ShowSelectItem;

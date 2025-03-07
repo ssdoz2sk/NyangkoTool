@@ -43,7 +43,7 @@ ShowHandleProtocol(
     UINTN       ProtocolIndex;
 
     InitializeListHead (&HandleSubMenu->MenuItemList);
-    HandleSubMenu->Title   = L"Protocols";
+    StrnCpyS(HandleSubMenu->Title, MAX_STRING_SIZE, L"Protocols", sizeof(L"Protocols")/sizeof(CHAR16));
     HandleSubMenu->ColSplt = 4;
     HandleSubMenu->Ratio   = 3;
     HandleSubMenu->Order   = 1;
@@ -92,7 +92,7 @@ ShowAllHandle (
     CHAR16      *Title;
 
     InitializeListHead (&HandleMenu->MenuItemList);
-    HandleMenu->Title   = L"Handle(%%p)";
+    StrnCpyS(HandleMenu->Title, MAX_STRING_SIZE, L"Handle(%%p)", sizeof(L"Handle(%%p)")/sizeof(CHAR16));
     HandleMenu->ColSplt = 4;
     HandleMenu->Ratio   = 1;
     HandleMenu->Order   = 0;
@@ -175,7 +175,7 @@ Search (
     CHAR16      *Title;
 
     InitializeListHead (&HandleMenu->MenuItemList);
-    HandleMenu->Title   = L"Handle(%%p)";
+    StrnCpyS(HandleMenu->Title, MAX_STRING_SIZE, L"Handle(%%p)", sizeof(L"Handle(%%p)")/sizeof(CHAR16));
     HandleMenu->ColSplt = 4;
     HandleMenu->Ratio   = 1;
     HandleMenu->Order   = 0;
@@ -345,7 +345,7 @@ EFI_STATUS EFIAPI InitHandleMenu(
     MENU            *Menu     = AllocateZeroPool(sizeof(MENU));
 
     InitializeListHead (&Menu->MenuItemList);
-    Menu->Title   = L"Handle Menu";
+    StrnCpyS(Menu->Title, MAX_STRING_SIZE, L"Handle Menu", sizeof(L"Handle Menu")/sizeof(CHAR16));
 
     RegisterMenuItem (Menu,
                       L"Show all handle",

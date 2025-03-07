@@ -37,7 +37,7 @@ NyangkoMenuLibConstructor (
 
     gMenu = AllocateZeroPool(sizeof(MENU));
     InitializeListHead (&gMenu->MenuItemList);
-    gMenu->Title = L"Nyangko Tool v0.1.0 (25/02/29)";
+    UnicodeSPrint (gMenu->Title, MAX_STRING_SIZE, L"%s %s (%s)", APP_NAME, VERSION_STRING, RELEASE_DATE);
 
     return EFI_SUCCESS;
 }
